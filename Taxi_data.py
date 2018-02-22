@@ -10,8 +10,7 @@ matplotlib.use('TkAgg')  # using matplotlib in the backend
 train = pd.read_csv('data/train.csv')
 rain = pd.read_csv('data/rain.csv')
 
-
-# give the first give elements
+"""
 print("**********")
 print("Description of the dataset")
 print(train.describe())
@@ -19,12 +18,13 @@ print(rain.describe())
 print("**********")
 
 # Confirm if there are any nan values
-# print(train.isnull().sum())
+print(train.isnull().sum())
 
 # Explore the data
-# print(train['vendor_id'].unique())  # Unique values 1 and 2
-# print(train['passenger_count'].unique())  # Values range from 0-9
-# print(train['pickup_longitude'].unique())
+print(train['vendor_id'].unique())  # Unique values 1 and 2
+print(train['passenger_count'].unique())  # Values range from 0-9
+print(train['pickup_longitude'].unique())
+"""
 
 # Clean up trip duration in train data
 # We see some absurd trip duration in the training set. So we clean up all
@@ -41,7 +41,7 @@ rain['datetime'] = pd.to_datetime(rain['datetime'].str.strip(), format='%d/%m/%Y
 
 # Here we decide to use the wheather data from PICKUP TIME, we could also choose
 # DROPOFF TIME, this should be decided at validation time
-train['pickup_datetime_hour'] = train['pickup_datetime'].copy()
+train['pickup_datetime_hour'] = train['pickup_datetime'].map(lambda timestamp:timestamp.replace(minute=0, second=0))
 
 # Augmenting data - matching rain data to date and time
 
@@ -56,7 +56,8 @@ for attribute in ("year", "month", "day", "hour", "minute", "second"):
 # Erase the datetime objects, we don't, need them anymore
 del train['datetime'], train['pickup_datetime'], train['dropoff_datetime']
 
-print(train.head())
+# Remove not features columns
+del train['id'], train['pickup_datetime_hour']
 
 # Remove rides to and from far away areas
 xlim = [-74.03, -73.77]
@@ -74,5 +75,7 @@ plt.figure(figsize=(10, 10))
 plt.plot(longitude, latitude, '.', alpha=0.4, markersize=0.05)
 plt.show()
 
+print(train)
+
 # write dataframe into new csv file
-train.to_csv('train_clean.csv')
+train.to_csv('data/train_features.csv')
