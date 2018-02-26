@@ -12,6 +12,7 @@ def getFastestRoute(pickupLong,pickupLat,dropoffLong,dropoffLat,id):
 		print("request error")
 		print(pickupLong,pickupLat,dropoffLong,dropoffLat)
 		print(url)
+		print(id)
 		return -1
 	distance=-1
    #try:
@@ -35,19 +36,38 @@ def getFastestRoute(pickupLong,pickupLat,dropoffLong,dropoffLat,id):
 
 writeData=[["id","distance"]]
 
-with open('../../data/train/train.csv', newline='') as csvfile:
+test=True
+if test:
+	idIDX=0
+	ploIDX=4
+	plaIDX=5
+	doloIDX=6
+	dolaIDX=7
+	originFile='../../data/test/test.csv'
+	destFile='test_distances.csv'
+else:
+	idIDX=0
+	ploIDX=4+1
+	plaIDX=5+1
+	doloIDX=6+1
+	dolaIDX=7+1
+	originFile='../../data/train/train.csv'
+	destFile='train_distances.csv'
+
+
+with open(originFile, newline='') as csvfile:
 	csvFile = csv.reader(csvfile, delimiter=',', quotechar='|')
 	i=0
 	row=next(csvFile)
 	row=next(csvFile)
 	try:
-		while row != None :#and i<5:
+		while row != None:# and i<5:
 			#print(row[0])
-			id=row[0]
-			plo=row[5]
-			pla=row[6]
-			dolo=row[7]
-			dola=row[8]
+			id=row[idIDX]
+			plo=row[ploIDX]
+			pla=row[plaIDX]
+			dolo=row[doloIDX]
+			dola=row[dolaIDX]
 			dist=getFastestRoute(plo,pla,dolo,dola,id)
 			writeData.append([id,dist])
 			#print()
@@ -57,7 +77,7 @@ with open('../../data/train/train.csv', newline='') as csvfile:
 	except:
 		pass
 
-myFile = open('example2.csv', 'w')
+myFile = open(destFile, 'w')
 with myFile:
     writer = csv.writer(myFile)
     writer.writerows(writeData)
