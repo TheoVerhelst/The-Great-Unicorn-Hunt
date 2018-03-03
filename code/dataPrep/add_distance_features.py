@@ -46,16 +46,16 @@ if test:
     plaIDX = 5
     doloIDX = 6
     dolaIDX = 7
-    originFile = '../../data/test/test.csv'
-    destFile = 'test_distances.csv'
+    originFile = '../../data/test.csv'
+    destFile = '../../data/test_distances.csv'
 else:
     idIDX = 0
     ploIDX = 4 + 1
     plaIDX = 5 + 1
     doloIDX = 6 + 1
     dolaIDX = 7 + 1
-    originFile = '../../data/train/train.csv'
-    destFile = 'train_distances.csv'
+    originFile = '../../data/train.csv'
+    destFile = '../../data/train_distances.csv'
 
 with open(originFile, newline='') as csvfile:
     csvFile = csv.reader(csvfile, delimiter=',', quotechar='|')
