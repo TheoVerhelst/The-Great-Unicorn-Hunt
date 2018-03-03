@@ -2,3 +2,4 @@ data/
 env/
 .idea
 code/dataPrep/test.csv
+**/__pycache__/
