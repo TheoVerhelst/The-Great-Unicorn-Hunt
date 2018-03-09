@@ -2,6 +2,10 @@ import pandas as pd
 import numpy as np
 
 def main(input_file, output_file):
+    """
+    expected input_file : {train/test}_merged.csv
+    expected output_file: {train/test}_merged.csv
+    """
     dataset = pd.read_csv(input_file)
 
     if 'trip_duration' in dataset:

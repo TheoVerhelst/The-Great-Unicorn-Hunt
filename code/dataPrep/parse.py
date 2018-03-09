@@ -1,6 +1,10 @@
 import pandas as pd
 
 def main(input_file, output_file):
+    """
+    expected input_file : {train/test}.csv
+    expected output_file: {train/test}_parsed.csv
+    """
     dataset = pd.read_csv(input_file)
 
     # Convert the pickup and dropoff times to datetime objects
