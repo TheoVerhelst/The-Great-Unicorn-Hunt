@@ -25,7 +25,7 @@ parsed_df = pd.read_csv(parsed_file)
 added_features_df = pd.read_csv(added_features_file)
 distances_features_df = pd.read_csv(distances_features_file)
 merged_df = pd.merge(parsed_df, pd.merge(added_features_df, distances_features_df, on='id'), on='id')
-merged_df.to_csv(merged_file)
+merged_df.to_csv(merged_file, index=False)
 
 # Clean the final dataset
 print("Cleaning data...")

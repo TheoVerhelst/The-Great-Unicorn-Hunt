@@ -27,4 +27,4 @@ def main(input_file, output_file):
         del dataset['dropoff_datetime']
 
     # write dataframe into new csv file
-    dataset.to_csv(output_file)
+    dataset.to_csv(output_file, index=False)

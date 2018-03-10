@@ -17,10 +17,9 @@ def main(input_file, rain_file, output_file):
     dataset = pd.merge(dataset, rain, left_on='pickup_datetime', right_on='datetime', validate='many_to_one')
 
     # Create other features here
-    dataset["dow"] = dataset['pickup_datetime'].dt.
 
     # Keep only the id and the rain feature
     dataset = dataset[['id', 'precipit_mm']]
 
     # write dataframe into new csv file
-    dataset.to_csv(output_file)
+    dataset.to_csv(output_file, index=False)
