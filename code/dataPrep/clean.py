@@ -27,4 +27,4 @@ def main(input_file, output_file):
     dataset = dataset[(dataset.dropoff_latitude > ylim[0]) & (dataset.dropoff_latitude < ylim[1])]
 
     # write dataframe into new csv file
-    dataset.to_csv(output_file)
+    dataset.to_csv(output_file,index=False)

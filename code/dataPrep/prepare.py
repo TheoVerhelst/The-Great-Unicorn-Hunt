@@ -1,9 +1,9 @@
 import pandas as pd
 import parse, clean, add_features
 
-path = 'data/'
+path = '../../data/'
 # Change to 'test' to prepare the test dataset
-prefix = 'train'
+prefix = 'test'
 original_file           = path + prefix + '.csv'
 parsed_file             = path + prefix + '_parsed.csv'
 added_features_file     = path + prefix + '_added_features.csv'
@@ -25,7 +25,7 @@ parsed_df = pd.read_csv(parsed_file)
 added_features_df = pd.read_csv(added_features_file)
 distances_features_df = pd.read_csv(distances_features_file)
 merged_df = pd.merge(parsed_df, pd.merge(added_features_df, distances_features_df, on='id'), on='id')
-merged_df.to_csv(merged_file)
+merged_df.to_csv(merged_file,index=False)
 
 # Clean the final dataset
 print("Cleaning data...")
