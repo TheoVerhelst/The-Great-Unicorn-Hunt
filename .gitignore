@@ -1,5 +1,6 @@
 data/
 env/
+ve/ # My virtual environment folder
 .idea
 code/dataPrep/test.csv
 **/__pycache__/
