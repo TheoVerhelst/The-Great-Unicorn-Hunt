@@ -1,7 +1,7 @@
 import pandas as pd
 import parse, clean, add_features
 
-path = '../../data/'
+path = 'data/'
 # Change to 'test' to prepare the test dataset
 prefix = 'train'
 original_file           = path + prefix + '.csv'
