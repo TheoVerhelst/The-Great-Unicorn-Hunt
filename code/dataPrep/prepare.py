@@ -13,7 +13,7 @@ rain_dataset            = path + "rain.csv"
 
 # Parse the original dataset
 print("Parsing of original data...")
-parse.main(original_file, parsed_file)
+parse.main(original_file, parsed_file,prefix)
 # Create features from the dataset
 print("Creating additional features...")
 add_features.main(parsed_file, rain_dataset, added_features_file)
