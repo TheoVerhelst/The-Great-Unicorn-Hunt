@@ -13,8 +13,6 @@ dataset = pd.read_csv('data/train_merged.csv')
 y = dataset['trip_duration'].values
 # Delete irrelevant columns in training set
 del dataset['trip_duration'], dataset["id"]
-# Add bias unit
-dataset['bias_unit'] = 1
 X = dataset.values
 
 # Normalize X
