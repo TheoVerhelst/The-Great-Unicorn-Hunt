@@ -1,6 +1,6 @@
 import pandas as pd
 
-def main(input_file, output_file):
+def main(input_file, output_file,prefix="troll"):
     """
     expected input_file : {train/test}.csv
     expected output_file: {train/test}_parsed.csv
@@ -25,6 +25,9 @@ def main(input_file, output_file):
     # Remove useless columns
     if 'dropoff_datetime' in dataset:
         del dataset['dropoff_datetime']
+
+    if prefix=="train":
+        dataset["trip_duration_in_minutes"]=dataset["trip_duration"]//60
 
     # write dataframe into new csv file
     dataset.to_csv(output_file,index=False)

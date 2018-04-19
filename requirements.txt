@@ -2,4 +2,6 @@ matplotlib
 numpy
 scipy
 scikit-learn
-tensorflow
+pandas
+tpot
+geopy
