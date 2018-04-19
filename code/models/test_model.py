@@ -1,11 +1,12 @@
 # Here import your model
 from sklearn import linear_model
 
-from sklearn.model_selection import validation_curve
+from sklearn.model_selection import validation_curve, train_test_split
 from sklearn import preprocessing
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from helpers import root_mean_squared_log_error
 
 dataset = pd.read_csv('data/train_merged.csv')
 
@@ -36,4 +37,4 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8)
 regressor.set_params(alpha=best_alpha)
 regressor.fit(X_train, y_train)
 print("best alpha =", alpha_range[np.nanargmax(valid_scores)])
-print("Root mean squared error =", metrics.mean_squared_error(y_test, regressor.predict(X_test)) ** 0.5)
+print("Root mean squared log error =", root_mean_squared_log_error(regressor, X_test, y_test))

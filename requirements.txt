@@ -5,3 +5,4 @@ scikit-learn
 pandas
 tpot
 geopy
+xgboost

@@ -8,7 +8,7 @@ dataset = pd.read_csv('data/train_merged.csv')
 # Extract the objective values
 y = dataset['trip_duration'].values
 # Delete irrelevant columns in training set
-del dataset['trip_duration'], dataset["id"]
+del dataset['trip_duration'], dataset["id"], dataset["trip_duration_in_minutes"]
 
 # Normalize X
 X = dataset.values
