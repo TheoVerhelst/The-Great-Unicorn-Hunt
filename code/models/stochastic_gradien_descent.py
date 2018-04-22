@@ -3,9 +3,6 @@ from sklearn.linear_model import SGDRegressor
 
 from sklearn.model_selection import validation_curve,cross_val_score,train_test_split,GridSearchCV
 from sklearn import preprocessing
-from sklearn.tree import DecisionTreeRegressor
-
-from sklearn.ensemble import AdaBoostRegressor,RandomForestRegressor
 import pandas as pd
 from time import time
 import matplotlib.pyplot as plt
@@ -46,6 +43,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8)
 # print("Root mean squared error =", root_mean_squared_log_error(regressor, X_test, y_test))
 
 clf = GridSearchCV(regressor, parameters,verbose=10)
+#clf=regressor
 clf.fit(X_train,y_train)
 print("Root mean squared error =", root_mean_squared_log_error(clf, X_test, y_test))
+root_mean_squared_log_error_minutes(clf, X_test, y_test)
 print(clf.get_params())
