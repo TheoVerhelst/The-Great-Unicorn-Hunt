@@ -6,12 +6,12 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import xgboost as xgb
 from sklearn import metrics
-from helpers import timer
+from helpers import timer,root_mean_squared_log_error_minutes
 
 # import prepared dataset
 dataset = pd.read_csv('data/train_merged.csv')
 y = dataset['trip_duration'].values
-del dataset['trip_duration'], dataset["id"]
+del dataset['trip_duration'], dataset["id"],dataset['trip_duration_in_minutes']
 X = dataset.values
 
 # Split dataset into tr and tst sets
@@ -50,3 +50,6 @@ y_pred[y_pred < 0] = 0 # Some predictions are negative, that screws up the log
 
     # final error metric
 print("RMSLE = ", metrics.mean_squared_error(np.log(y_test + 1), np.log(y_pred + 1)) ** 0.5)
+y_pred=np.round(y_pred/60)*60//60
+y_test=np.round(y_test/60)*60//60
+print("RMSLE for classification = ", metrics.mean_squared_error(np.log(y_test + 1), np.log(y_pred + 1)) ** 0.5)
