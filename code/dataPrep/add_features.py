@@ -96,10 +96,10 @@ def main(input_file, rain_file, output_file):
     dataset['straight_distance'] = se_dist.values
     dataset['bearing'] = se_bearing.values
     dataset['manhattan_distance'] = se_manhattan.values
-    dataset['trig distance'] = se_trig.values
+    dataset['trig_distance'] = se_trig.values
 
     # Keep only the id and the rain feature
-    dataset = dataset[['id', 'precipit_mm','straight_distance','bearing','manhattan_distance', 'trig distance']]
+    dataset = dataset[['id', 'precipit_mm','straight_distance','bearing','manhattan_distance', 'trig_distance']]
 
     # write dataframe into new csv file
     dataset.to_csv(output_file,index=False)
