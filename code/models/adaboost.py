@@ -35,3 +35,4 @@ end=time()
 print(end-start,"seconds")
 
 print("RMSLE =", root_mean_squared_log_error(regr, X_test, y_test))
+root_mean_squared_log_error_minutes(regr, X_test, y_test)
