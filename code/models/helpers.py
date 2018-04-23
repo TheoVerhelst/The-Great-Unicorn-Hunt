@@ -2,10 +2,11 @@ from sklearn import metrics
 import numpy as np
 from datetime import datetime
 
-def root_mean_squared_log_error(regressor, X, y):
-    y_pred = regressor.predict(X)
+def root_mean_squared_log_error(y, y_pred):
     y_pred[y_pred < 0] = 0 # Some predictions are negative, that screws up the log
-    return metrics.mean_squared_error(np.log(y + 1), np.log(y_pred + 1)) ** 0.5
+    return -metrics.mean_squared_error(np.log(y + 1), np.log(y_pred + 1)) ** 0.5
+
+rmsle_scorer = metrics.make_scorer(root_mean_squared_log_error)
 
 # calculates time taken by a model (to compare time complexity)
 # call it before running a model: start=timer()

@@ -22,7 +22,7 @@ dtest = xgb.DMatrix(X_test, label=y_test)
 watchlist = [(dtrain, 'train'), (dtest, 'test')]
 
 #run XGB model
-xgb_pars = {'min_child_weight': 1, 'eta': 0.5, 'colsample_bytree': 0.9, 
+xgb_pars = {'min_child_weight': 1, 'eta': 0.5, 'colsample_bytree': 0.9,
             'max_depth': 6,
 'subsample': 0.9, 'lambda': 1., 'nthread': -1, 'booster' : 'gbtree', 'silent': 1,
 'eval_metric': 'rmse', 'objective': 'reg:linear'}
@@ -30,8 +30,5 @@ model = xgb.train(xgb_pars, dtrain, 10, watchlist, early_stopping_rounds=2,
       maximize=False, verbose_eval=1)
 print('Modeling RMSLE %.5f' % model.best_score)
 
-y_pred = model.predict(dtest)
-y_pred[y_pred < 0] = 0 # Some predictions are negative, that screws up the log
-
 # final error metric
-print("RMSLE = ", metrics.mean_squared_error(np.log(y_test + 1), np.log(y_pred + 1)) ** 0.5)
+print("RMSLE =", root_mean_squared_log_error(y_test, model.predict(dtest)))
