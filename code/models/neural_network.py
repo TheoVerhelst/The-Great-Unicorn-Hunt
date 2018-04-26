@@ -30,11 +30,11 @@ estimator = tf.estimator.DNNRegressor(
 
 def train_input_fn(X, y, batch_size):
     dataset = tf.data.Dataset.from_tensor_slices((dict(X), y))
-    return dataset.shuffle().batch(batch_size).repeat()
+    return dataset.shuffle(1000).batch(batch_size).repeat()
 
 def test_input_fn(X):
     dataset = tf.data.Dataset.from_tensor_slices((dict(X),))
-    return dataset.shuffle().batch(10)
+    return dataset.shuffle(1000).batch(10)
 
 batch_size = 1000
 print("*"*30)
@@ -50,7 +50,7 @@ print(y_pred)
 print("*"*30)
 print(y_test)
 
-y_test = y_test * std_y + mean_y
-y_pred = y_pred * std_y + mean_y
+#y_test = y_test * std_y + mean_y
+#y_pred = y_pred * std_y + mean_y
 
 print("RMSLE =", root_mean_squared_log_error(y_test, y_pred))
