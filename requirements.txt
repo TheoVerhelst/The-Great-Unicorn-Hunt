@@ -6,3 +6,4 @@ pandas
 tpot
 geopy
 xgboost
+sklearn

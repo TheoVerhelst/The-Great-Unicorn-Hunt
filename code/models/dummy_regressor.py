@@ -19,4 +19,4 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8)
 
 regressor = dummy.DummyRegressor()
 regressor.fit(X_train, y_train)
-print("RMSLE =", root_mean_squared_log_error(regressor, X_test, y_test))
+print("RMSLE =", root_mean_squared_log_error(y_test, regressor.predict(X_test)))

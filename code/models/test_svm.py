@@ -31,5 +31,5 @@ y_test = y_test[test_indices]
 best_gamma = 0.01 # Found by grid search
 regressor = SVR(gamma=best_gamma, verbose=10)
 regressor.fit(X_train, y_train)
-score = root_mean_squared_log_error(regressor, X_test, y_test)
+score = root_mean_squared_log_error(y_test, regressor.predict(X_test)))
 print("Root mean squared log error({}) = {}".format(best_gamma, score))

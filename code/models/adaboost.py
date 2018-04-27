@@ -10,7 +10,7 @@ import pandas as pd
 from time import time
 #import matplotlib.pyplot as plt
 import numpy as np
-from helpers import *
+from helpers import root_mean_squared_log_error, root_mean_squared_log_error_minutes
 
 dataset = pd.read_csv('data/train_merged.csv')
 
@@ -34,5 +34,5 @@ regr.fit(X_train,y_train);
 end=time()
 print(end-start,"seconds")
 
-print("RMSLE =", root_mean_squared_log_error(regr, X_test, y_test))
-root_mean_squared_log_error_minutes(regr, X_test, y_test)
+print("RMSLE =", root_mean_squared_log_error(y_test, regr.predict(X_test)))
+print("RMSLE minutes =", root_mean_squared_log_error_minutes(y_test, regr.predict(X_test)))
