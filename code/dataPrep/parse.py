@@ -25,9 +25,10 @@ def main(input_file, output_file,prefix="troll"):
     # Remove useless columns
     if 'dropoff_datetime' in dataset:
         del dataset['dropoff_datetime']
+    del dataset['pickup_year'] # This column is always 2016, not very informative
 
     if prefix=="train":
-        dataset["trip_duration_in_minutes"]=round(dataset["trip_duration"]/60)*60//60
+        dataset["trip_duration_in_minutes"] = round(dataset["trip_duration"]/60)*60//60
 
     # write dataframe into new csv file
-    dataset.to_csv(output_file,index=False)
+    dataset.to_csv(output_file, index=False)
