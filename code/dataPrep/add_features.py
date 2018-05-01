@@ -12,8 +12,8 @@ def main(input_file, rain_file, output_file):
     rain = pd.read_csv(rain_file, skipinitialspace=True)
 
     # Convert the pickup and rain times to datetime objects
-    dataset['pickup_datetime'] = pd.to_datetime(dict(year=dataset['pickup_year'],
-            month=dataset['pickup_month'], day=dataset['pickup_day'], hour= dataset['pickup_hour']))
+    dataset['pickup_datetime'] = pd.to_datetime(dict(year=2016, month=dataset['pickup_month'],
+            day=dataset['pickup_day'], hour= dataset['pickup_hour']))
     rain['datetime'] = pd.to_datetime(rain['datetime'].str.strip(), format='%d/%m/%Y %H:%M')
 
     # Augmenting data - matching rain data to pickup time

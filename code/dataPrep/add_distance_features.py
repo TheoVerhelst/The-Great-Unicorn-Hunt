@@ -1,71 +1,41 @@
-import csv
 import urllib.request
 import json
+import pandas as pd
+import numpy as np
+# Import the dataset file paths
+from prepare import original_file, distances_features_file
 
+def getFastestRoute(pickupLong, pickupLat, dropoffLong, dropoffLat):
 
-def getFastestRoute(pickupLong, pickupLat, dropoffLong, dropoffLat, id):
-    url = 'http://127.0.0.1:5000/route/v1/driving/{0},{1};{2},{3}?steps=true'.format(
-        pickupLong, pickupLat, dropoffLong, dropoffLat)
+    url = 'http://127.0.0.1:5000/route/v1/driving/{0},{1};{2},{3}'.format(
+    pickupLong, pickupLat, dropoffLong, dropoffLat)
+
+    response = None
     try:
-        t = urllib.request.urlopen(url).read().decode('utf-8')
-        data = json.loads(t)
-    except:
-        print("request error")
-        print(pickupLong, pickupLat, dropoffLong, dropoffLat)
-        print(url)
-        print(id)
-        return -1
-    distance = -1
-    try:
-        distance = data["routes"][0]["distance"]
-    except:
-        print("json error")
-        print(id)
-        print(url)
+        response = urllib.request.urlopen(url).read().decode('utf-8')
+    except urllib.error.HTTPError as e:
+            return 0, 0
 
-    return distance
+    response = json.loads(response)
+    distance = response["routes"][0]["distance"]
+    trip_duration = response["routes"][0]["duration"]
+    return distance, trip_duration
 
+def main(input_file, output_file):
+    """
+    expected input_file : {train/test}.csv
+    expected output_file: {train/test}_distances.csv
+    """
+    dataset = pd.read_csv(input_file)
+    # Use numpy.vectorize to call getFasterRoute on the whole column
+    # And zip to assign both columns at once
+    dataset["distance"], dataset["osrm_trip_duration"] = np.vectorize(getFastestRoute)(dataset["pickup_longitude"],
+            dataset["pickup_latitude"], dataset["dropoff_longitude"], dataset["dropoff_latitude"])
 
-writeData = [["id", "distance"]]
+    dataset = dataset[["distance", "id", "osrm_trip_duration"]]
 
-test = True
-if test:
-    idIDX = 0
-    ploIDX = 4
-    plaIDX = 5
-    doloIDX = 6
-    dolaIDX = 7
-    originFile = '../../data/test.csv'
-    destFile = '../../data/test_distances.csv'
-else:
-    idIDX = 0
-    ploIDX = 4 + 1
-    plaIDX = 5 + 1
-    doloIDX = 6 + 1
-    dolaIDX = 7 + 1
-    originFile = '../../data/train.csv'
-    destFile = '../../data/train_distances.csv'
+    # write dataframe into new csv file
+    dataset.to_csv(output_file, index=False)
 
-with open(originFile, newline='') as csvfile:
-    csvFile = csv.reader(csvfile, delimiter=',', quotechar='|')
-    i = 0
-    row = next(csvFile)
-    row = next(csvFile)
-    try:
-        while row != None:
-            id = row[idIDX]
-            plo = row[ploIDX]
-            pla = row[plaIDX]
-            dolo = row[doloIDX]
-            dola = row[dolaIDX]
-            dist = getFastestRoute(plo, pla, dolo, dola, id)
-            writeData.append([id, dist])
-            row = next(csvFile)
-            i += 1
-    except:
-        pass
-
-myFile = open(destFile, 'w')
-with myFile:
-    writer = csv.writer(myFile)
-    writer.writerows(writeData)
+if __name__ == "__main__":
+    main(original_file, distances_features_file)

@@ -1,6 +1,6 @@
 import pandas as pd
 
-def main(input_file, output_file,prefix="troll"):
+def main(input_file, output_file, prefix):
     """
     expected input_file : {train/test}.csv
     expected output_file: {train/test}_parsed.csv
