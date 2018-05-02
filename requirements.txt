@@ -7,3 +7,4 @@ tpot
 geopy
 xgboost
 sklearn
+seaborn

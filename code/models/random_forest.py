@@ -18,7 +18,7 @@ X = dataset.values
 X = preprocessing.scale(X)
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8)
 
-regressor = RandomForestRegressor(n_estimators=125, n_jobs=-1, verbose=10,
+regressor = RandomForestRegressor(n_estimators=50, n_jobs=-1, verbose=10,
         bootstrap= False, max_depth=None, max_features=10, min_samples_leaf=3, min_samples_split=3)
 regressor.fit(X_train, y_train)
 print("RMSLE =", root_mean_squared_log_error(y_test, regressor.predict(X_test)))

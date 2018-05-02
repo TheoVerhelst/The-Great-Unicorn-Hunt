@@ -3,7 +3,7 @@ import parse, clean, add_features
 
 path = 'data/'
 # Change to 'test' to prepare the test dataset
-prefix = 'test'
+prefix = 'train'
 original_file           = path + prefix + '.csv'
 parsed_file             = path + prefix + '_parsed.csv'
 added_features_file     = path + prefix + '_added_features.csv'
