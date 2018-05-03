@@ -3,7 +3,7 @@ import parse, clean, add_features
 
 path = 'data/'
 # Change to 'test' to prepare the test dataset
-prefix = 'train'
+prefix = 'test'
 original_file           = path + prefix + '.csv'
 parsed_file             = path + prefix + '_parsed.csv'
 added_features_file     = path + prefix + '_added_features.csv'
@@ -29,9 +29,11 @@ def main():
     merged_df = pd.merge(parsed_df, pd.merge(added_features_df, distances_features_df, on='id'), on='id')
     merged_df.to_csv(merged_file, index=False)
 
-    # Clean the final dataset
-    print("Cleaning data...")
-    clean.main(merged_file, merged_file)
+    # Do not clean the test set
+    if prefix == "train":
+        # Clean the final dataset
+        print("Cleaning data...")
+        clean.main(merged_file, merged_file)
 
 if __name__ == "__main__":
     main()
