@@ -10,13 +10,17 @@ from helpers import root_mean_squared_log_error
 dataset = pd.read_csv('data/train_merged.csv')
 
 # Subsamples with 15000 samples
-dataset = dataset.sample(15000)
+dataset = dataset.sample(500000)
 
 # Extract the objective values
-y = dataset['trip_duration'].values
+y = dataset['trip_duration_in_minutes'].values
 # Delete irrelevant columns in training set
 del dataset['trip_duration'], dataset["id"], dataset["trip_duration_in_minutes"]
 X = dataset.values
+
+means = np.nanmean(X, axis=0)
+nan_locations = np.where(np.isnan(X))
+X[nan_locations] = np.take(means, nan_locations[1])
 
 # Normalize X
 X = preprocessing.scale(X)

@@ -17,6 +17,10 @@ y = dataset['trip_duration'].values
 del dataset['trip_duration'], dataset["id"], dataset["trip_duration_in_minutes"]
 X = dataset.values
 
+means = np.nanmean(X, axis=0)
+nan_locations = np.where(np.isnan(X))
+X[nan_locations] = np.take(means, nan_locations[1])
+
 # Normalize X
 X = preprocessing.scale(X)
 
