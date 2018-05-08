@@ -28,16 +28,16 @@ the pickup time, the pickup and drop-off locations, the number of passengers,
 and a boolean flag indicated if the trip data has been stored on-board or
 directly sent to the data server.
 
-Figures XX to XX show the distribution of some of these features. We did not
-show the pickup month, minute and seconds, as their graphs are uniformly
-distributed and therefore not visually informative. Outliers have been removed
-in order to properly display the pickup and drop-off location distribution, as
-well as the trip duration. These outliers will be discussed in the next section.
-We can see in figure \ref{long} and \ref{lat} that the location seems to be
-roughly normally distributed, and the logarithm of the trip duration also
-appears to be normally distributed in figure \ref{log_trip_duration}. The smaller
-bumps outside of the main bell in the location curves correspond to trips to the
-city airport.
+Figures \ref{long} to \ref{pickup_hour} show the distribution of some of these
+features. We did not show the pickup month, minute and seconds, as their graphs
+are uniformly distributed and therefore not visually informative. Outliers have
+been removed in order to properly display the pickup and drop-off location
+distribution, as well as the trip duration. These outliers will be discussed in
+the next section. We can see in figure \ref{long} and \ref{lat} that the
+location seems to be roughly normally distributed, and the logarithm of the trip
+duration also appears to be normally distributed in figure
+\ref{log_trip_duration}. The smaller bumps outside of the main bell in the
+location curves correspond to trips to the city airport.
 
 \begin{figure}
     \centering
@@ -91,17 +91,46 @@ city airport.
     \end{minipage}
 \end{figure}
 
-
-It is also important to make sure that the training and test sets are
+ It is also important to make sure that the training and test sets are
 independently and identically distributed. For this, we compared the above
 distributions with those from the test set. If the distribution from the
 training and testing set significantly overlap, then we can consider that the
 I.I.D. assumption is verified. As shown for example in figure
-and , it is indeed the case.
+\ref{test_vs_train_long} and \ref{test_vs_train_lat}, it is indeed the case.
+
+\begin{figure}
+    \centering
+    \begin{minipage}{.45\textwidth}
+        \includegraphics[width=\linewidth]{test_vs_train_long}
+        \caption{Drop-off longitude in the training and test set.}
+        \label{test_vs_train_long}
+    \end{minipage}
+    \hspace{0.05\textwidth}
+   \begin{minipage}{.45\textwidth}
+       \includegraphics[width=\linewidth]{test_vs_train_lat}
+       \caption{Drop-off latitude in the training and test set.}
+       \label{test_vs_train_lat}
+    \end{minipage}
+\end{figure}
 
 \section{Preprocessing}
 
 \section{Feature Selection}
+In order to ensure that the model was not being fed useless features, a feature
+selection elimination procedure was undertaken. The results are shown in the
+above figure - the lower the ranking the better the feature is - by using the
+scikit-learn package recursive feature elimination. This function attempted to
+find a ranking of the features by doing a prediction while removing one feature
+at the time. As expected the most important features such as drop-off and pickup
+locations as well as different measures of distance were ranked as very
+important. In contrast,  features that didn’t contain much information such as
+\texttt{pickup\_year}, \texttt{store\_and\_fwd\_flag}, \texttt{vendor\_id} and
+\texttt{pickup\_month}, were ranked as very low importance and hence were
+removed from the model. Interestingly enough, the precipitation feature
+providing an idea of the weather conditions, didn’t rank very low leading to
+believe that it didn’t have a significant effect in the duration of the trips
+within New York and specifically Manhattan which is where most of the journeys
+were recorded.
 
 \section{Methods for Model Selection}
 
