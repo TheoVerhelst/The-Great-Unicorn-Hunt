@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import preprocessing, dummy, metrics
 import pandas as pd
 import numpy as np
-from helpers import *
+from helpers import root_mean_squared_log_error
 
 dataset = pd.read_csv('data/train_merged.csv')
 
@@ -11,6 +11,10 @@ y = dataset['trip_duration'].values
 # Delete irrelevant columns in training set
 del dataset['trip_duration'], dataset["id"], dataset["trip_duration_in_minutes"]
 X = dataset.values
+
+means = np.nanmean(X, axis=0)
+nan_locations = np.where(np.isnan(X))
+X[nan_locations] = np.take(means, nan_locations[1])
 
 # Normalize X
 X = preprocessing.scale(X)

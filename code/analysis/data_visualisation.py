@@ -2,16 +2,8 @@
 
 # import libraries
 import pandas as pd
-from datetime import datetime
-import pandas as pd
-from sklearn.model_selection import train_test_split
-import xgboost as xgb
-from sklearn.linear_model import LinearRegression, Ridge,BayesianRidge
 from sklearn.cluster import MiniBatchKMeans
-from sklearn.metrics import mean_squared_error
-from math import radians, cos, sin, asin, sqrt
 import seaborn as sns
-import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams['figure.figsize'] = [16, 10]
@@ -29,13 +21,13 @@ plt.grid(b=1)
 plt.show()
 
 # trip duration log(histogram)
-dataset['log(Trip Duration)'] = np.log(dataset['trip_duration'].values + 1)
+dataset['log_trip_duration'] = np.log(dataset['trip_duration'].values + 1)
 plt.hist(dataset['log_trip_duration'].values, bins=100)
 plt.xlabel('log(Trip Duration)')
 plt.ylabel('number of train records')
 plt.grid(b=1)
 plt.show()
-sns.distplot(dataset["log(Trip Duration)"], bins =100)
+sns.distplot(dataset["log_trip_duration"], bins =100)
 
 # Time per vendor
 import warnings
@@ -108,8 +100,10 @@ store_and_fwd_flag_ = pd.get_dummies(dataset['store_and_fwd_flag'], prefix='sf',
 cluster_pickup = pd.get_dummies(X['pickup_cluster'], prefix='p', prefix_sep='_')
 cluster_dropoff = pd.get_dummies(X['dropoff_cluster'], prefix='d', prefix_sep='_')
 
-X = pd.concat([X, cluster_pickup, cluster_dropoff])
-X = dataset.drop(['vendor_id', 'passenger_count', 'store_and_fwd_flag', ], axis=1)
-X.to_csv("train_merged_with_clusters",index=False)
-X2 = pd.concat([X, vendor_, passenger_count_, store_and_fwd_flag_)
-X2.to_csv("train_merged_with_cluster_dummy",index=False)
+# added augmented data to new csv file
+# !! path not done !!
+Xcluster = pd.concat([X, cluster_pickup, cluster_dropoff], axis=1)
+Xcluster = Xcluster.drop(['vendor_id', 'passenger_count', 'store_and_fwd_flag', ], axis=1)
+Xcluster.to_csv("train_merged_with_clusters",index=False)
+XclusterDummy = pd.concat([Xcluster, vendor_, passenger_count_, store_and_fwd_flag_], axis=1)
+XclusterDummy.to_csv("train_merged_with_cluster_dummy",index=False)

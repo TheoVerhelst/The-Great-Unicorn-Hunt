@@ -1,5 +1,7 @@
 data/
 env/
+venv
+venv/
 ve/ # My virtual environment folder
 .idea
 code/dataPrep/test.csv
