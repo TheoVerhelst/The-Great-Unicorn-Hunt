@@ -2,16 +2,16 @@
 Advanced Machine Learning coursework, by The Unicorn Hunters
 
 ## Setup
-Create a virtual environment (with virtualenv, or let PyCharm handle it), then
+Extract `data/train.zip` and `data/test.zip` in `data/`, then create a virtual environment (with virtualenv, or let PyCharm handle it), then
 run the following in a terminal with the virtual env activated:
 
 ```
 pip3 install --upgrade -r requirements.txt
+python3 code/dataPrep/prepare.py
 ```
 
-You can now test that your libraries work by running
+You can now run the various scripts, for example
 
 ```
-python3 run_me.py
+python3 code/analysis/heatmap.py
 ```
-It should display a vector of numbers.
