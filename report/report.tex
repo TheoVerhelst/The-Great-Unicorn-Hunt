@@ -160,10 +160,15 @@ longitude $[-74.03;-73.77]$ and latitude : $[40.63;40.85]$.
 To augment our  dataset  we downloaded weather data from 2016 from XX and
 extracted the volume of precipitation for each of our trips. Next, we used the
 GPS coordinates of the pickup and drop-off locations to calculate following
-properties: Straight distance between the two points along the surface of the
-earth called Vincenty’s distance Pythagorean distance between the two points
-Manhattan distance The angle between the two points in relation to the north
-pole We also used OSRM (\url{http://project-osrm.org/}) to give us information
+properties:
+\begin{itemize}
+    \item Straight distance between the two points along the surface of the
+earth called Vincenty’s distance;
+    \item Pythagorean distance between the two points;
+    \item Manhattan distance;
+    \item The angle between the two points in relation to the north pole.
+\end{itemize}
+We also used OSRM (\url{http://project-osrm.org/}) to give us information
 about the cab ride. OSRM stands for open source routing machine and makes it
 possible to download maps from all around the world and calculate the street
 distance between two points as well as other information. Besides the street
