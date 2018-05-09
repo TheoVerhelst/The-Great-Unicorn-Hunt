@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{abstract}
+\usepackage{url}
 \usepackage{graphicx}
 
 \author{The Unicorn Hunters\\
@@ -19,6 +20,39 @@ This is the abstract
 \end{abstract}
 
 \section{Introduction}
+New York City (NYC) is one of the busiest cities in the world with pedestrians
+constantly rushing to arrive to their destination on time. To avoid searching
+for parking and the stress of driving during rush hour, most citizens of NYC use
+public transport, and especially taxis. The most important piece of information
+is undoubtedly the estimated trip duration for customers to plan their schedule,
+for the driver to find the shortest route and for deriving the estimated price
+of the journey. This is exactly the aim of the ‘New York City Taxi Trip
+Duration’ Kaggle competition, build a model able to predict the total ride
+duration of taxi trips given a set of features such as geo-coordinates, number
+of passengers and others. The dataset provided is one release by the NYC Taxi
+and Limousine Commission (TLC) and contains over 1.45 million trip records over
+the entire year of 2016. Participants must then predict the trip duration in
+seconds for each entry of the test set containing 625,134 trip records.
+
+Before diving into building predictive models, the data must be carefully
+analysed to gain an understanding of the features provided and the problem at
+hand while comparing the distributions between the train and test sets. The next
+stage is preprocessing to identify invalid data and eliminate outliers. The
+training set was also augmented with hourly rainfall, further distance
+measurements and road related informations such as number of intersections to
+reach the destination from The Open Source Routing Machine (ORSM). The relevance
+of each feature was then evaluated through Principal Component Analysis (PCA)
+and recursive feature selection. The evaluation metric of the Kaggle
+competition, Root Mean Squared Logarithmic Error (RMSLE), was used to evaluate
+the performance of the models models. It was also decided to predict the trip
+durations in minutes by classification for a more logical result as it is
+virtually impossible to predict this type of problem down to the exact second in
+a dynamic environment. Finally, a total of seven models were implemented:
+Adaboost, Support Vector Machine (SVM), Gaussian Process, Stochastic Gradient
+Descent, Random Forest, Extreme Gradient Boosting (XGBoost) and Neural Network
+(NN). The results of each model is presented and discussed in the last section
+of this report.
+
 
 \section{Data Analysis}
 The first step of a machine learning project is to explore and analyse the data,
@@ -69,7 +103,7 @@ location curves correspond to trips to the city airport.
     \end{minipage}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=\linewidth]{pickup_hour_vs_trip_duration}
     \caption{Distribution of the pickup time, for different days of the week.}
@@ -114,6 +148,32 @@ I.I.D. assumption is verified. As shown for example in figure
 \end{figure}
 
 \section{Preprocessing}
+Since the data is provided by Kaggle, it is already very clean. However, when
+looking at the distributions of the GPS coordinates and the trip durations, we
+observed that some trips were outliers. We calculated the mean value for the
+trip duration (961 seconds) and the standard deviation (5247 seconds) and then
+removed all trips which were shorter than the mean minus twice the standard
+deviation or longer than the mean + twice the standard deviation. We also
+removed all trips which were not in the following bounds for their coordinates :
+longitude $[-74.03;-73.77]$ and latitude : $[40.63;40.85]$.
+
+To augment our  dataset  we downloaded weather data from 2016 from XX and
+extracted the volume of precipitation for each of our trips. Next, we used the
+GPS coordinates of the pickup and drop-off locations to calculate following
+properties: Straight distance between the two points along the surface of the
+earth called Vincenty’s distance Pythagorean distance between the two points
+Manhattan distance The angle between the two points in relation to the north
+pole We also used OSRM (\url{http://project-osrm.org/}) to give us information
+about the cab ride. OSRM stands for open source routing machine and makes it
+possible to download maps from all around the world and calculate the street
+distance between two points as well as other information. Besides the street
+distance we included the number of turns to make before reaching the
+destination, how many intersections one has to pass.  Apart from the data
+provided by Kaggle we could also have used more trip records available on the
+website of the NYC Taxi and Limousine Commission. However the files available
+are of the size of a few gigabytes per month, which is why decided not to
+include them.
+
 
 \section{Feature Selection}
 In order to ensure that the model was not being fed useless features, a feature
@@ -132,9 +192,91 @@ believe that it didn’t have a significant effect in the duration of the trips
 within New York and specifically Manhattan which is where most of the journeys
 were recorded.
 
+On the other hand an analysis of feature importance in figure \ref{information_gain} provides
+a different perspective on which features provide more information gain to the
+model. It is expected that the distances add the most significant amount of
+information with exception of the Manhattan distance which apparently adds
+little information - contradicting the RFE analysis. Furthermore, the amount of
+intersections, day of the week and day of the year have significant amount more
+value to the model than previously. This is a good indication of the different
+amount of congestion at different times of week and year whereas in this
+analysis it seems that the coordinate locations add less value as they change
+less due to being majorly close by within the city. Finally, note that some of
+the features within this information gain analysis have been removed from the
+last one, however, by removing any more features within this selection, the
+models error increased, hence, this selection of features was chosen as the
+final one.
+
 \section{Methods for Model Selection}
+In order to assess the performance of each model to be tested and compare the
+results, an error metric was selected. To remain constant with the scoring of
+the Kaggle competition, the same evaluation function was chosen: Root Mean
+Squared Logarithmic Error (RMSLE). This allows to estimate the leaderboard
+ranking of the results and since it is logarithmic, it ensures that the
+prediction for short trips have the same weighting as the predictions for long
+trips. The RMSLE is calculated by:
+
+\[RMSLE = \sqrt{\frac{1}{n}\sum_{i=1}^n(\log(p_i+1) - \log(a_i+1))^2}\]
+
+Where $n$ is the total number of entries in the data set, $p_i$ is the predicted trip
+duration and $a_i$ is the true trip duration.  The dummy regressor was implemented
+to use as a benchmark since its predictions employ basic rules, to further
+compare the regression models. It achieved a high RMSLE of 0.810 for the
+prediction in seconds and 0.802 for the prediction in minutes.  Additionally to
+predicting the trip duration in seconds through regression, each model was
+designed to predict the trip duration in minutes through classification for a
+more logical and interpretable estimate. In real life scenarios, it would be
+impossible to predict a taxi journey to the exact second due to the dynamic
+environment of the roads.
 
 \section{Results}
+\subsection{Neural Networks}
+Neural networks (NN) performed well in this data set with some hyper-parameters
+tuning. At first, due to the nonlinearity of the data, models with up to 3
+hidden layers and 512 nodes were experimented on, however, the results were far
+from satisfactory. As one tried to reduce the complexity of the model, in which
+the optimum point was found to be with three layers of 64 nodes - errors reduced
+down to around 0.35 RMSLE. Following this, hyper-parameters grid search such as
+the type of solver, activation function, batch size and amount of regularisation
+were conducted which led to finding our optimal model. The Adam solver was the
+most efficient which was expected as it is a good solver for large datasets,
+with a relu activation function, some regularisation and small batch sizes of
+200, which brought the error down to 0.346.
+
+\subsection{Random Forest}
+Random forest builds multiple decision trees and merges them together to get a
+more accurate and stable prediction. This algorithm proved to be a powerful
+algorithm for this dataset as it brings an extra aspect of randomness into the
+model, as when it is growing the trees, it searches for the best feature among a
+random subset of features instead of searching for the best feature while
+splitting a node. This increases the diversity of the model which in this case
+resulted in better results. The key hyper-parameters in this model were the
+number of estimators (number of trees in the forest), the minimum number of
+samples required to split a node and the minimum number of samples required to
+be at a leaf node. The prediction error was always reduced by the number of
+estimators of which it was increased up to the hardware memory capability - 125
+estimators which led to an error of 0.36. On the other hand, the other
+parameters were more finely tuned to reach the conclusion that the lower the
+number of minimum samples split and minimum samples leaf, the higher the
+overfitting likelihood within the model. Hence, by increasing these parameters,
+an optimum error value was found to be at 0.346 thereby reaching one of the most
+performant models within the trials conducted.
+
+\subsection{Extreme Gradient Boosting}
+Since this problem uses a relatively large dataset, it was expected that Extreme
+Gradient Boosting (XGBoost) would perform well. Using the default parameter
+values and all of the available features, it produced a baseline score of 0.394.
+After applying grid search to optimise the hyper-parameters and removing features
+suggested by the feature selection elimination, the RMSLE was reduced to 0.346,
+making XGBoost perform ever so slightly better than NN and becoming the best
+tested model.
+
+\subsection{Stochastic Gradient Descent}
+Using the Stochastic Gradient Descent regressor from sklearn, we got an RMSLE of
+0.487 without any hyper-parameter tuning. Using grid search however we managed to
+achieve an RMSLE of around 0.455. While we do scale our features before running
+the model, it does not seem to get closer to the true objective function. This
+may be due to the nature of GPS coordinates which are difficult to linearise.
 
 \section{Conclusion}
 
@@ -146,5 +288,11 @@ were recorded.
 \appendix
 \newpage
 \section{Additional Figures}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{feature_importance_nonumber}
+    \caption{Information gain of each feature.}
+    \label{information_gain}
+\end{figure}
 
 \end{document}
