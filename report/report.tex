@@ -179,6 +179,7 @@ website of the NYC Taxi and Limousine Commission. However the files available
 are of the size of a few gigabytes per month, which is why decided not to
 include them.
 
+Additionally to the data augmentation we also always scale it before passing it to a model. Sklearn provides the possibility to center every column to the mean and scale to unit variance.
 
 \section{Feature Selection}
 In order to ensure that the model was not being fed useless features, a feature
