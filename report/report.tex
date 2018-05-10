@@ -53,7 +53,6 @@ Descent, Random Forest, Extreme Gradient Boosting (XGBoost) and Neural Network
 (NN). The results of each model is presented and discussed in the last section
 of this report.
 
-
 \section{Data Analysis}
 The first step of a machine learning project is to explore and analyse the data,
 in order to better understand the problem. Our dataset is composed of 11
@@ -198,6 +197,13 @@ believe that it didn’t have a significant effect in the duration of the trips
 within New York and specifically Manhattan which is where most of the journeys
 were recorded.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{feature_importance_seaborn}
+    \caption{Information gain of each feature.}
+    \label{information_gain}
+\end{figure}
+
 On the other hand an analysis of feature importance in figure \ref{information_gain} provides
 a different perspective on which features provide more information gain to the
 model. It is expected that the distances add the most significant amount of
@@ -268,6 +274,31 @@ overfitting likelihood within the model. Hence, by increasing these parameters,
 an optimum error value was found to be at 0.346 thereby reaching one of the most
 performant models within the trials conducted.
 
+\subsection{Support Vector Machine}
+The power of Support Vector Machine (SVM) is appealing, given its low
+generalisation error. However, the time complexity of the training phase of the
+SVM is proportional to the cube of the number of training examples, and as a
+result it is impossible to train on our entire dataset, which is composed of
+more than 1,400,000 samples. Therefore, we trained a SVM regressor on a random
+subset of the training set, and the size of this subset could range up to about
+20,000 samples. Past this value, the training time is simply unbearable.
+
+On the other hand, since the evaluation of a trained SVM model is fast, we could
+validate our model on a larger portion of the training set, thus giving a strong
+estimation of the generalisation performance. It turns out that by training a
+SVM on 20,000 samples, testing it on 100,000 samples and with a suitable
+hyper-parameter optimisation, we were able to achieve a RSMLE of 0.359.
+
+\subsection{Gaussian Process}
+Just as the support vector machine, the Gaussian Process (GP) has a time
+complexity of $O(n^3)$. Therefore, we were not able to train a GP model with the
+whole dataset. After a grid search to find the optimal hyper-parameters, we
+trained a model with a rational quadratic kernel, and a noise reduction
+parameter $\alpha=0.01$. This model has been trained on 1000 random samples, and
+validated on 100,000 other samples. The RSMLE was calculated to be 0.469685,
+which is most probably due to underfitting, due to the very limited number of
+training samples.
+
 \subsection{Extreme Gradient Boosting}
 Since this problem uses a relatively large dataset, it was expected that Extreme
 Gradient Boosting (XGBoost) would perform well. Using the default parameter
@@ -294,11 +325,5 @@ may be due to the nature of GPS coordinates which are difficult to linearise.
 \appendix
 \newpage
 \section{Additional Figures}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\linewidth]{feature_importance_nonumber}
-    \caption{Information gain of each feature.}
-    \label{information_gain}
-\end{figure}
 
 \end{document}
