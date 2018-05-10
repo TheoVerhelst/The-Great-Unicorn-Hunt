@@ -7,8 +7,8 @@
 \usepackage{graphicx}
 
 \author{The Unicorn Hunters\\
-(Christian Frantzen, Guilherme Barreiro Vieira,\\
-Mortimer Sotom and Théo Verhelst )}
+Christian Frantzen, Guilherme Barreiro Vieira,\\
+Mortimer Sotom and Théo Verhelst}
 \title{Advanced Machine Learning Coursework: Kaggle Competition NYC Taxis}
 
 \begin{document}
@@ -16,7 +16,17 @@ Mortimer Sotom and Théo Verhelst )}
 
 
 \begin{abstract}
-This is the abstract
+Accurate prediction of taxi trip duration is an important part of efficient
+customer service for taxi companies. To this end, the New York City Taxi
+and Limousine Commission organised a competition on the Kaggle website, aiming
+to stimulate research in taxi trip duration regression. This report presents the
+work that our team conducted on this problem. A classical machine learning
+pipeline has been applied: data analysis, data cleaning, feature selection,
+model evaluation and optimisation. The models that have been tried range from
+Ridge Regression to Extreme Gradient Boosting. An unlabeled test set is proposed
+to the competitors in order to accurately evaluate the generalisation
+performance of their models. The predictions of our best models on this test set
+gave us a decent ranking in the top 20\% of the competition leaderboard.
 \end{abstract}
 
 \section{Introduction}
@@ -26,8 +36,8 @@ for parking and the stress of driving during rush hour, most citizens of NYC use
 public transport, and especially taxis. The most important piece of information
 is undoubtedly the estimated trip duration for customers to plan their schedule,
 for the driver to find the shortest route and for deriving the estimated price
-of the journey. This is exactly the aim of the ‘New York City Taxi Trip
-Duration’ Kaggle competition, build a model able to predict the total ride
+of the journey. This is exactly the aim of the ``New York City Taxi Trip
+Duration'' Kaggle competition, build a model able to predict the total ride
 duration of taxi trips given a set of features such as geo-coordinates, number
 of passengers and others. The dataset provided is one release by the NYC Taxi
 and Limousine Commission (TLC) and contains over 1.45 million trip records over
@@ -62,15 +72,15 @@ and a boolean flag indicated if the trip data has been stored on-board or
 directly sent to the data server.
 
 Figures \ref{long} to \ref{pickup_hour} show the distribution of some of these
-features. We did not show the pickup month, minute and seconds, as their graphs
+features. Pickup month, minute and seconds are not shown, as their graphs
 are uniformly distributed and therefore not visually informative. Outliers have
 been removed in order to properly display the pickup and drop-off location
 distribution, as well as the trip duration. These outliers will be discussed in
-the next section. We can see in figure \ref{long} and \ref{lat} that the
+the next section. One can see in figure \ref{long} and \ref{lat} that the
 location seems to be roughly normally distributed, and the logarithm of the trip
 duration also appears to be normally distributed in figure
 \ref{log_trip_duration}. The smaller bumps outside of the main bell in the
-location curves correspond to trips to the city airport.
+location curves correspond to trips to the two city airports.
 
 \begin{figure}
     \centering
@@ -124,11 +134,11 @@ location curves correspond to trips to the city airport.
     \end{minipage}
 \end{figure}
 
- It is also important to make sure that the training and test sets are
-independently and identically distributed. For this, we compared the above
-distributions with those from the test set. If the distribution from the
-training and testing set significantly overlap, then we can consider that the
-I.I.D. assumption is verified. As shown for example in figure
+It is also important to make sure that the training and test sets are
+independently and identically distributed. For this, the above distributions
+have been compared with those from the test set. If the distribution from the
+training and testing set significantly overlap, then it can be supposed that
+the I.I.D. assumption is verified. As shown for example in figure
 \ref{test_vs_train_long} and \ref{test_vs_train_lat}, it is indeed the case.
 
 \begin{figure}
@@ -156,23 +166,25 @@ deviation or longer than the mean + twice the standard deviation. We also
 removed all trips which were not in the following bounds for their coordinates :
 longitude $[-74.03;-73.77]$ and latitude : $[40.63;40.85]$.
 
-To augment our  dataset  we downloaded weather data from 2016 from XX and
-extracted the volume of precipitation for each of our trips. Next, we used the
-GPS coordinates of the pickup and drop-off locations to calculate following
+To augment our  dataset  we downloaded weather data from 2016 from IEM Computed
+Hourly Precipitation Totals by Iowa State University
+(\url{https://mesonet.agron.iastate.edu/request/asos/hourlyprecip.phtml?network=NY_ASOS})
+and extracted the volume of precipitation for each of our trips. Next, we used
+the GPS coordinates of the pickup and drop-off locations to calculate following
 properties:
 \begin{itemize}
-    \item Straight distance between the two points along the surface of the
-earth called Vincenty’s distance;
+    \item Distance between the two points curved along the surface of the
+earth called, Vincenty's distance;
     \item Pythagorean distance between the two points;
     \item Manhattan distance;
-    \item The angle between the two points in relation to the north pole.
+    \item The angle between the two points in relation to the north pole, called bearing.
 \end{itemize}
 We also used OSRM (\url{http://project-osrm.org/}) to give us information
 about the cab ride. OSRM stands for open source routing machine and makes it
 possible to download maps from all around the world and calculate the street
 distance between two points as well as other information. Besides the street
-distance we included the number of turns to make before reaching the
-destination, how many intersections one has to pass.  Apart from the data
+distance, the number of turns to make before reaching the
+destination has been included, as well as how many intersections one has to pass.  Apart from the data
 provided by Kaggle we could also have used more trip records available on the
 website of the NYC Taxi and Limousine Commission. However the files available
 are of the size of a few gigabytes per month, which is why decided not to
@@ -221,12 +233,12 @@ final one.
 
 \section{Methods for Model Selection}
 In order to assess the performance of each model to be tested and compare the
-results, an error metric was selected. To remain constant with the scoring of
+results, an error metric was selected. To remain consistent with the scoring of
 the Kaggle competition, the same evaluation function was chosen: Root Mean
 Squared Logarithmic Error (RMSLE). This allows to estimate the leaderboard
 ranking of the results and since it is logarithmic, it ensures that the
 prediction for short trips have the same weighting as the predictions for long
-trips. The RMSLE is calculated by:
+trips. The RMSLE is calculated as
 
 \[RMSLE = \sqrt{\frac{1}{n}\sum_{i=1}^n(\log(p_i+1) - \log(a_i+1))^2}\]
 
@@ -238,10 +250,20 @@ prediction in seconds and 0.802 for the prediction in minutes.  Additionally to
 predicting the trip duration in seconds through regression, each model was
 designed to predict the trip duration in minutes through classification for a
 more logical and interpretable estimate. In real life scenarios, it would be
-impossible to predict a taxi journey to the exact second due to the dynamic
-environment of the roads.
+unrealistic to predict a taxi journey to the exact second due to the dynamic
+environment of the city.
 
 \section{Results}
+
+\subsection{Extreme Gradient Boosting}
+Since this problem uses a relatively large dataset, it was expected that Extreme
+Gradient Boosting (XGBoost) would perform well. Using the default parameter
+values and all of the available features, it produced a baseline score of 0.394.
+After applying grid search to optimise the hyper-parameters and removing features
+suggested by the feature selection elimination, the RMSLE was reduced to 0.346,
+making XGBoost perform ever so slightly better than NN and becoming the best
+tested model.
+
 \subsection{Neural Networks}
 Neural networks (NN) performed well in this data set with some hyper-parameters
 tuning. At first, due to the nonlinearity of the data, models with up to 3
@@ -279,34 +301,15 @@ The power of Support Vector Machine (SVM) is appealing, given its low
 generalisation error. However, the time complexity of the training phase of the
 SVM is proportional to the cube of the number of training examples, and as a
 result it is impossible to train on our entire dataset, which is composed of
-more than 1,400,000 samples. Therefore, we trained a SVM regressor on a random
-subset of the training set, and the size of this subset could range up to about
-20,000 samples. Past this value, the training time is simply unbearable.
+more than 1,400,000 samples. Therefore, a SVM regressor has been trained on a
+random subset of the training set, which would contain up to 20,000 random
+samples. Past this value, the training time is simply unbearable.
 
-On the other hand, since the evaluation of a trained SVM model is fast, we could
-validate our model on a larger portion of the training set, thus giving a strong
-estimation of the generalisation performance. It turns out that by training a
-SVM on 20,000 samples, testing it on 100,000 samples and with a suitable
-hyper-parameter optimisation, we were able to achieve a RSMLE of 0.359.
-
-\subsection{Gaussian Process}
-Just as the support vector machine, the Gaussian Process (GP) has a time
-complexity of $O(n^3)$. Therefore, we were not able to train a GP model with the
-whole dataset. After a grid search to find the optimal hyper-parameters, we
-trained a model with a rational quadratic kernel, and a noise reduction
-parameter $\alpha=0.01$. This model has been trained on 1000 random samples, and
-validated on 100,000 other samples. The RSMLE was calculated to be 0.469685,
-which is most probably due to underfitting, due to the very limited number of
-training samples.
-
-\subsection{Extreme Gradient Boosting}
-Since this problem uses a relatively large dataset, it was expected that Extreme
-Gradient Boosting (XGBoost) would perform well. Using the default parameter
-values and all of the available features, it produced a baseline score of 0.394.
-After applying grid search to optimise the hyper-parameters and removing features
-suggested by the feature selection elimination, the RMSLE was reduced to 0.346,
-making XGBoost perform ever so slightly better than NN and becoming the best
-tested model.
+On the other hand, since the evaluation of a trained SVM model is fast, it was
+possible to validate the model on a larger portion of the training set, thus
+giving a strong estimation of the generalisation performance. It turns out that
+by training a SVM on 20,000 samples, testing it on 100,000 samples and with a
+suitable hyper-parameter optimisation, a SVM model achieves a RSMLE of 0.359.
 
 \subsection{Stochastic Gradient Descent}
 Using the Stochastic Gradient Descent regressor from sklearn, we got an RMSLE of
@@ -315,7 +318,51 @@ achieve an RMSLE of around 0.455. While we do scale our features before running
 the model, it does not seem to get closer to the true objective function. This
 may be due to the nature of GPS coordinates which are difficult to linearise.
 
+\subsection{Gaussian Process}
+Just as the support vector machine, the Gaussian Process (GP) has a time
+complexity of $O(n^3)$. Therefore, it was unbearable to train a GP model with
+the whole dataset. After a grid search to find the optimal hyper-parameters, a
+GP model has been trained with a rational quadratic kernel, and a noise
+reduction parameter $\alpha=0.01$, on 1000 random samples and then validated on
+100,000 other samples. The RSMLE was calculated to be 0.469, which is most
+probably due to underfitting, due to the very limited number of training
+samples.
+
+\subsection{Model Comparison}
+Table \ref{results} summarises the results obtained by the different models
+discussed in the previous sections.
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        Model & RMSLE regression & RMSLE classification\\
+        \hline
+        XGBoost & 0.346 & 0.286 \\
+        Neural Network & 0.347 & 0.136 \\
+        Random Forest & 0.350 & 0.312 \\
+        SVM & 0.359 & NA \\
+        SGD & 0.475 & 0.400 \\
+        Gaussian Process & 0.512 & 0.500 \\
+        Ridge Regression & 0.539 & NA \\
+        Dummy Regressor & 0.810 & 0.802 \\
+        AdaBoost & 0.990 & 0.800 \\
+        \hline
+    \end{tabular}
+    \caption{Comparison of the RMLSE of all tried models.}
+    \label{results}
+\end{table}
+
 \section{Conclusion}
+As our first real team machine learning project, we tackled this introductory
+Kaggle competition with a lot of curiosity. Having enriched the provided data
+significantly with help from OSRM we managed to establish a decent model with
+Extreme Gradient Boosting, which ranks us XX on the Kaggle competition
+leaderboard. While we did improve the data set we could have gone further by
+including the available files on the NYC TLC’s website the increase the number
+of samples, just as using a sophisticated way of linearizing GPS coordinates
+like one-hot encoding could have helped the improve the predictions. This could
+be studied in a next Kaggle competition using this kind of data. For the time
+being, we can be be happy with what we learned in the process and look forward
+to our next challenges as machine learners.
 
 \newpage
 \footnotesize
