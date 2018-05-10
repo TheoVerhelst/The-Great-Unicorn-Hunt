@@ -63,14 +63,14 @@ the last section of this report.
 The first step of a machine learning project is to explore and analyse the data,
 in order to better understand the problem. Our dataset is composed of 11
 features: a unique identifier for each row, the identifier of the taxi company,
-the pickup time, the pickup and drop-off locations, the number of passengers,
+the pick-up time, the pick-up and drop-off locations, the number of passengers,
 and a boolean flag indicated if the trip data has been stored on-board or
 directly sent to the data server.
 
 Figures \ref{long} to \ref{pickup_hour} show the distribution of some of these
-features. Pickup month, minute and seconds are not shown, as their graphs
+features. Pick-up month, minute and seconds are not shown, as their graphs
 are uniformly distributed and therefore not visually informative. Outliers have
-been removed in order to properly display the pickup and drop-off location
+been removed in order to properly display the pick-up and drop-off location
 distribution, as well as the trip duration. These outliers will be discussed in
 the next section. One can see in figure \ref{long} and \ref{lat} that the
 location seems to be roughly normally distributed, and the logarithm of the trip
@@ -111,7 +111,7 @@ location curves correspond to trips to the two city airports.
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{pickup_hour_vs_trip_duration}
-    \caption{Distribution of the pickup time, for different days of the week.}
+    \caption{Distribution of the pick-up time, for different days of the week.}
     \label{pickup_hour}
 \end{figure}
 
@@ -153,79 +153,86 @@ the I.I.D. assumption is verified. As shown for example in figure
 \end{figure}
 
 \section{Preprocessing}
-Since the data is provided by Kaggle, it is already very clean. However, when
-looking at the distributions of the GPS coordinates and the trip durations, we
-observed that some trips were outliers. We calculated the mean value for the
-trip duration (961 seconds) and the standard deviation (5247 seconds) and then
-removed all trips which were shorter than the mean minus twice the standard
-deviation or longer than the mean + twice the standard deviation. We also
-removed all trips which were not in the following bounds for their coordinates :
-longitude $[-74.03;-73.77]$ and latitude : $[40.63;40.85]$.
+Since the data is provided by Kaggle, it is already very clean. However, some
+outliers can be found in the distributions of the GPS coordinates and the trip
+durations. The mean value for the trip duration (961 seconds) and the standard
+deviation (5247 seconds) have been calculated, and all trips which were longer
+than the mean plus twice the standard deviation have been removed. Futhemore,
+all trips which were located far outside of NYC were removed, as it would
+probably the case for a realistic taxi service. The geographic bounds are
+$[-74.03;-73.77]$ for the longitude and $[40.63;40.85]$ for the latitude.
 
-To augment our  dataset  we downloaded weather data from 2016 from IEM Computed
-Hourly Precipitation Totals by Iowa State University
-(\url{https://mesonet.agron.iastate.edu/request/asos/hourlyprecip.phtml?network=NY_ASOS})
-and extracted the volume of precipitation for each of our trips. Next, we used
-the GPS coordinates of the pickup and drop-off locations to calculate following
-properties:
+To augment our  dataset, the weather data of NYC in 2016 has been downloaded
+\footnote{from IEM Computed Hourly Precipitation Totals by Iowa State University
+(\url{https://mesonet.agron.iastate.edu/request/asos/hourlyprecip.phtml?network=NY_ASOS})}
+and the current volume of precipitation has been added to each trip. Next, the
+GPS coordinates of the pick-up and drop-off locations have been used to calculate
+following properties:
 \begin{itemize}
     \item Distance between the two points curved along the surface of the
 earth called, Vincenty's distance;
     \item Pythagorean distance between the two points;
     \item Manhattan distance;
-    \item The angle between the two points in relation to the north pole, called bearing.
+    \item The angle between the two points in relation to the north pole, called
+    bearing.
 \end{itemize}
-We also used OSRM (\url{http://project-osrm.org/}) to give us information
-about the cab ride. OSRM stands for open source routing machine and makes it
-possible to download maps from all around the world and calculate the street
-distance between two points as well as other information. Besides the street
-distance, the number of turns to make before reaching the
-destination has been included, as well as how many intersections one has to pass.  Apart from the data
-provided by Kaggle we could also have used more trip records available on the
-website of the NYC Taxi and Limousine Commission. However the files available
-are of the size of a few gigabytes per month, which is why decided not to
-include them.
+OpenStreetMap Route Machine (OSRM, \url{http://project-osrm.org/}) has been used
+to add further information about the taxi ride. OSRM makes it possible to
+download maps from all around the world and calculate the street distance
+between two points as well as other information. Besides the street distance,
+the number of turns to make before reaching the destination has been included,
+as well as how many intersections one has to pass. Apart from the data provided
+by Kaggle it was possible to use more trip records available on the website of
+the NYC Taxi and Limousine Commission. However the files available are of the
+size of a few gigabytes per month, which is why it was decided not to include
+them.
 
-Additionally to the data augmentation we also always scale it before passing it to a model. Sklearn provides the possibility to center every column to the mean and scale to unit variance.
+Additionally to the data augmentation, each sample is shifted and scaled, so
+that each column has zero mean and unit variance, as required for most of the
+models that have been used. This functionality is easily provided by the SKlearn
+library.
 
 \section{Feature Selection}
 In order to ensure that the model was not being fed useless features, a feature
 selection elimination procedure was undertaken. The results are shown in the
 above figure - the lower the ranking the better the feature is - by using the
-scikit-learn package recursive feature elimination. This function attempted to
-find a ranking of the features by doing a prediction while removing one feature
-at the time. As expected the most important features such as drop-off and pickup
-locations as well as different measures of distance were ranked as very
-important. In contrast,  features that didn’t contain much information such as
-\texttt{pickup\_year}, \texttt{store\_and\_fwd\_flag}, \texttt{vendor\_id} and
-\texttt{pickup\_month}, were ranked as very low importance and hence were
-removed from the model. Interestingly enough, the precipitation feature
-providing an idea of the weather conditions, didn’t rank very low leading to
-believe that it didn’t have a significant effect in the duration of the trips
-within New York and specifically Manhattan which is where most of the journeys
-were recorded.
+Sklearn package recursive feature elimination (RFE) on top of a random forest
+model. This function attempted to find a ranking of the features by doing a
+prediction while removing one feature at the time. As expected the most
+important features such as drop-off and pick-up locations as well as different
+measures of distance were ranked as very important. In contrast, features that
+did not contain much information such as pick-up year,
+\textit{store\_and\_fwd\_flag}, \textit{vendor\_id} and \textit{pickup\_month},
+were ranked as very low importance and hence were removed from the model.
+Interestingly enough, the precipitation feature providing an idea of the weather
+conditions, did not rank very low leading to believe that it did not have a
+significant effect in the duration of the trips within New York and specifically
+Manhattan, which is where most of the journeys were recorded.
+
+On the other hand an analysis of feature importance using XGBoost in figure
+\ref{information_gain} provides a different perspective on which features
+provide the most information to the model. This information implies the relative
+contribution of the corresponding feature to the model calculated - calculated
+by taking the average information gain produced by each feature on each split of
+the constructed trees. It is expected that the distance features add the most
+significant amount of information, with exception of the Manhattan distance which
+apparently adds little information - contradicting the RFE analysis.
+Furthermore, the amount of intersections, day of the week and day of the year
+add significantly more value to the model than previous analysis. This is a good
+indication of the different amount of congestion at different times of week and
+year, whereas in this analysis it seems that the coordinate locations add less
+value, as they change less due to being majorly close by within the city.
+Finally, note that some of the features within this information gain analysis
+have been removed from the last one. However, by removing any more features
+within this selection, the models error increased. Hence, this selection of
+features was chosen as the final one.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{feature_importance_seaborn}
-    \caption{Information gain of each feature.}
+    \caption{Average information gain of each feature in the XGBoost model.}
     \label{information_gain}
 \end{figure}
-
-On the other hand an analysis of feature importance in figure \ref{information_gain} provides
-a different perspective on which features provide more information gain to the
-model. It is expected that the distances add the most significant amount of
-information with exception of the Manhattan distance which apparently adds
-little information - contradicting the RFE analysis. Furthermore, the amount of
-intersections, day of the week and day of the year have significant amount more
-value to the model than previously. This is a good indication of the different
-amount of congestion at different times of week and year whereas in this
-analysis it seems that the coordinate locations add less value as they change
-less due to being majorly close by within the city. Finally, note that some of
-the features within this information gain analysis have been removed from the
-last one, however, by removing any more features within this selection, the
-models error increased, hence, this selection of features was chosen as the
-final one.
 
 \section{Methods for Model Selection}
 In order to assess the performance of each model to be tested and compare the
@@ -324,14 +331,18 @@ On the other hand, since the evaluation of a trained SVM model is fast, it was
 possible to validate the model on a larger portion of the training set, thus
 giving a strong estimation of the generalisation performance. It turns out that
 by training a SVM on 20,000 samples, testing it on 100,000 samples and with a
-suitable hyper-parameter optimisation, a SVM model achieves a RSMLE of 0.359.
+suitable hyper-parameter optimisation, a SVM model achieves a RSMLE of 0.359. By
+using more powerful hardware, it would certainly be possible to achieve a
+better score by using more training samples, in order to reduce the variance of
+the learned estimator, and thus its generalisation error.
 
 \subsection{Stochastic Gradient Descent}
-Using the Stochastic Gradient Descent regressor from sklearn, we got an RMSLE of
-0.487 without any hyper-parameter tuning. Using grid search however we managed to
-achieve an RMSLE of around 0.455. While we do scale our features before running
-the model, it does not seem to get closer to the true objective function. This
-may be due to the nature of GPS coordinates which are difficult to linearise.
+Using the Stochastic Gradient Descent regressor from sklearn, an RMSLE of 0.487
+has been obtained without any hyper-parameter tuning. Using grid search however
+it was possible to achieve an RMSLE of around 0.455. While the features are
+scaled before running the model, it does not seem to get closer to the true
+objective function. This may be due to the nature of GPS coordinates which are
+difficult to linearise.
 
 \subsection{Gaussian Process}
 Just as the support vector machine, the Gaussian Process (GP) has a time
