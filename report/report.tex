@@ -39,29 +39,25 @@ for the driver to find the shortest route and for deriving the estimated price
 of the journey. This is exactly the aim of the ``New York City Taxi Trip
 Duration'' Kaggle competition, build a model able to predict the total ride
 duration of taxi trips given a set of features such as geo-coordinates, number
-of passengers and others. The dataset provided is one release by the NYC Taxi
+of passengers and others. The dataset provided is one released by the NYC Taxi
 and Limousine Commission (TLC) and contains over 1.45 million trip records over
 the entire year of 2016. Participants must then predict the trip duration in
 seconds for each entry of the test set containing 625,134 trip records.
 
 Before diving into building predictive models, the data must be carefully
 analysed to gain an understanding of the features provided and the problem at
-hand while comparing the distributions between the train and test sets. The next
-stage is preprocessing to identify invalid data and eliminate outliers. The
-training set was also augmented with hourly rainfall, further distance
-measurements and road related informations such as number of intersections to
-reach the destination from The Open Source Routing Machine (ORSM). The relevance
-of each feature was then evaluated through Principal Component Analysis (PCA)
-and recursive feature selection. The evaluation metric of the Kaggle
-competition, Root Mean Squared Logarithmic Error (RMSLE), was used to evaluate
-the performance of the models models. It was also decided to predict the trip
-durations in minutes by classification for a more logical result as it is
-virtually impossible to predict this type of problem down to the exact second in
-a dynamic environment. Finally, a total of seven models were implemented:
-Adaboost, Support Vector Machine (SVM), Gaussian Process, Stochastic Gradient
-Descent, Random Forest, Extreme Gradient Boosting (XGBoost) and Neural Network
-(NN). The results of each model is presented and discussed in the last section
-of this report.
+hand. The next was preprocessing the data and augmenting it with hourly
+rainfall, further distance measurements and road related informations from The
+Open Source Routing Machine (ORSM). Section four explains how the relevance of
+each feature was evaluated by information gain and recursive feature selection.
+The following section describes the chosen evaluation metric, Root Mean Squared
+Logarithmic Error (RMSLE), and the reasoning behind also predicting the trip
+durations in minutes by classification. Finally, a total of seven models were
+implemented: Adaboost, Support Vector Machine (SVM), Gaussian Process,
+Stochastic Gradient Descent, Random Forest, Extreme Gradient Boosting (XGBoost)
+and Neural Network (NN). The results of each model is presented and discussed in
+the last section of this report.
+
 
 \section{Data Analysis}
 The first step of a machine learning project is to explore and analyse the data,
@@ -254,15 +250,34 @@ unrealistic to predict a taxi journey to the exact second due to the dynamic
 environment of the city.
 
 \section{Results}
+As previously mentioned, the results of each model will be presented in terms of
+their RMSLE score and the predictions in minutes through classification. The
+final optimised results of all models can observed and compared in table
+\ref{results}. Each model was initially tested by running with the default
+parameters and it became evident that neural networks, random forest and XGBoost
+performed much better than the remaining models. Those three models were
+extensively tested and optimised with all data available in appendix
+\ref{results_appendix}. A grid search was still applied to the less performant
+models but no further time was invested in optimising them since it was evident
+they would not outperform the top three models and hence the lack of testing
+results in the appendix.
 
 \subsection{Extreme Gradient Boosting}
 Since this problem uses a relatively large dataset, it was expected that Extreme
 Gradient Boosting (XGBoost) would perform well. Using the default parameter
 values and all of the available features, it produced a baseline score of 0.394.
-After applying grid search to optimise the hyper-parameters and removing features
-suggested by the feature selection elimination, the RMSLE was reduced to 0.346,
-making XGBoost perform ever so slightly better than NN and becoming the best
-tested model.
+After applying grid search to optimise the hyper-parameters (see appendix
+\ref{results_appendix}) and removing features suggested by the feature selection
+elimination, the RMSLE was reduced to 0.346, making XGBoost perform slightly
+better than NN and becoming the best tested model. $l_1$ and $l_2$
+regularisation terms were also introduced in an attempt to further improve the
+prediction accuracy but regardless of the values used, no effect could be
+observed. While training the model, an internal parameter controls which metric
+is used to calculate the evaluation for validation data. Unfortunately, no
+customised function can be passed so the RMSE was used but it is believed that
+if this parameter was customisable, using RMSLE as an error metric would
+marginally improve the results.
+
 
 \subsection{Neural Networks}
 Neural networks (NN) performed well in this data set with some hyper-parameters
@@ -328,9 +343,6 @@ reduction parameter $\alpha=0.01$, on 1000 random samples and then validated on
 probably due to underfitting, due to the very limited number of training
 samples.
 
-\subsection{Model Comparison}
-Table \ref{results} summarises the results obtained by the different models
-discussed in the previous sections.
 \begin{table}[h!]
     \centering
     \begin{tabular}{ccc}
@@ -378,5 +390,8 @@ to our next challenges as machine learners.
     \caption{Confusion matrix of the extended dataset.}
     \label{confusion}
 \end{figure}
+
+\section{Detailled Grid Search results}
+\label{results_appendix}
 
 \end{document}
