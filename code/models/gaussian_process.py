@@ -25,8 +25,7 @@ X[nan_locations] = np.take(means, nan_locations[1])
 X = preprocessing.scale(X)
 
 regressor = GaussianProcessRegressor(copy_X_train=False, alpha=0.01778279410038923,
-        kernel=kernels.RationalQuadratic(), n_restarts_optimizer=4, normalize_y=False)
-
+        kernel=kernels.RationalQuadratic(alpha=1, length_scale=1), n_restarts_optimizer=4, normalize_y=False)
 """
 regressor = GaussianProcessRegressor(copy_X_train=False)
 parameters = {'kernel':(kernels.RationalQuadratic(),  kernels.RBF(), kernels.WhiteKernel()),
@@ -43,14 +42,14 @@ print("best_score_:", clf.best_score_)
 
 regressor.set_params(**clf.best_params_)
 """
-X_train, y_train = resample(X, y, n_samples=1000)
+X_train, y_train = resample(X, y, n_samples=5000)
 regressor.fit(X_train, y_train)
 
 print("Training done, testing...")
 # Since we can't load the whole dataset, do batch testing
 batch_size = 5000
-X_test, y_test = resample(X, y, n_samples=1000000)
+X_test, y_test = resample(X, y, n_samples=100000)
 y_pred = np.ndarray((0,))
 for i in range(0, X_test.shape[0], batch_size):
     y_pred = np.hstack((y_pred, regressor.predict(X_test[i: i + batch_size])))
-print("RMSLE =", root_mean_squared_log_error(y_test, y_pred))
+print("RMSLE =", root_mean_squared_log_error(y_test, y_pred)) # Last result: 0.469685
