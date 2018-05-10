@@ -16,13 +16,8 @@ def main(input_file, rain_file, output_file):
             day=dataset['pickup_day'], hour= dataset['pickup_hour']))
     rain['datetime'] = pd.to_datetime(rain['datetime'].str.strip(), format='%d/%m/%Y %H:%M')
 
-    print(len(dataset))
-    print(len(rain))
-
     # Augmenting data - matching rain data to pickup time
     dataset = pd.merge(dataset, rain, how="left", left_on='pickup_datetime', right_on='datetime', validate='many_to_one')
-
-    print(len(dataset))
 
     ### Create other features down here ###
 
