@@ -1,10 +1,10 @@
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.externals import joblib
-from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 
-output_filename = "data/submission.csv"
+output_filename = "data/submission_rf.csv"
 model_filename = "serialized_random_forest.pkl"
 
 train_frame = pd.read_csv('data/train_merged.csv')
@@ -21,7 +21,6 @@ del test_frame['id']
 X_train = train_frame.values
 X_test = test_frame.values
 
-
 means = np.nanmean(X_train, axis=0)
 nan_locations = np.where(np.isnan(X_train))
 X_train[nan_locations] = np.take(means, nan_locations[1])
@@ -31,8 +30,9 @@ nan_locations = np.where(np.isnan(X_test))
 X_test[nan_locations] = np.take(means, nan_locations[1])
 
 # Normalize X_train
-X_train = preprocessing.scale(X_train)
-
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
 regressor = RandomForestRegressor(n_estimators=125, n_jobs=-1, verbose=10,
         bootstrap= False, max_depth=None, max_features=10, min_samples_leaf=3, min_samples_split=3)
 print("Training the random forest")

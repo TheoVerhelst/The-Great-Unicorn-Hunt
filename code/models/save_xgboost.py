@@ -1,4 +1,4 @@
-from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from sklearn.externals import joblib
 import numpy as np
@@ -26,19 +26,19 @@ means = np.nanmean(X_train, axis=0)
 nan_locations = np.where(np.isnan(X_train))
 X_train[nan_locations] = np.take(means, nan_locations[1])
 
-# Normalize X_train
-X_train = preprocessing.scale(X_train)
-
 means = np.nanmean(X_test, axis=0)
 nan_locations = np.where(np.isnan(X_test))
 X_test[nan_locations] = np.take(means, nan_locations[1])
+
+# Normalize X_train
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
 
 # fit XGBoost to training set
 dtrain = xgb.DMatrix(X_train, label=y_train)
 dtest = xgb.DMatrix(X_test)
 watchlist = [(dtrain, 'train')]
-
-
 
 #run XGB model
 xgb_pars = {'min_child_weight': 9,      # min sum of instance `qweight needed in a child
