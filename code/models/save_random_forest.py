@@ -2,6 +2,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.externals import joblib
 from sklearn import preprocessing
 import pandas as pd
+import numpy as np
 
 output_filename = "data/submission.csv"
 model_filename = "serialized_random_forest.pkl"
@@ -19,6 +20,16 @@ del test_frame['id']
 
 X_train = train_frame.values
 X_test = test_frame.values
+
+
+means = np.nanmean(X_train, axis=0)
+nan_locations = np.where(np.isnan(X_train))
+X_train[nan_locations] = np.take(means, nan_locations[1])
+
+means = np.nanmean(X_test, axis=0)
+nan_locations = np.where(np.isnan(X_test))
+X_test[nan_locations] = np.take(means, nan_locations[1])
+
 # Normalize X_train
 X_train = preprocessing.scale(X_train)
 

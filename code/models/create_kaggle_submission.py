@@ -3,7 +3,7 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 
-output_filename = "data/submission.csv"
+output_filename = "data/submission2.csv"
 model_filename = "serialized_random_forest.pkl"
 
 # Load the training set for the sole purpose of getting its normalizing factors,
@@ -14,7 +14,14 @@ train_frame = pd.read_csv('data/train_merged.csv')
 del train_frame['trip_duration'], train_frame["id"], train_frame["trip_duration_in_minutes"]
 # Normalize the training set
 scaler = StandardScaler()
-X_train = scaler.fit_transform(train_frame.values)
+
+X_train = train_frame.values
+
+means = np.nanmean(X_train, axis=0)
+nan_locations = np.where(np.isnan(X_train))
+X_train[nan_locations] = np.take(means, nan_locations[1])
+
+X_train = scaler.fit_transform(X_train)
 
 print("Loading test set")
 test_frame = pd.read_csv('data/test_merged.csv')

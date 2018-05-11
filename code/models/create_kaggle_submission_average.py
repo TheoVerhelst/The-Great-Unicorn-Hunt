@@ -3,7 +3,7 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 
-output_filename = "data/submission.csv"
+output_filename = "data/submission_average.csv"
 model_filename_rf = "serialized_random_forest.pkl"
 model_filename_nn = "serialized_neural_network.pkl"
 model_filename_xgb = "serialized_xgboost.pkl"
@@ -49,4 +49,3 @@ y_pred = (np.array(y_pred_rf) + np.array(y_pred_nn) + np.array(y_pred_xgb)) / 3
 print("Saving result to", output_filename)
 output_frame = pd.concat([test_ids, pd.Series(y_pred)], axis=1, keys=["id", "trip_duration"])
 output_frame.to_csv(output_filename, index=False)
-
