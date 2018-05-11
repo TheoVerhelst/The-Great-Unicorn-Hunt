@@ -5,6 +5,7 @@
 \usepackage{abstract}
 \usepackage{url}
 \usepackage{graphicx}
+\usepackage{float}
 
 \author{The Unicorn Hunters\\
 Christian Frantzen, Guilherme Barreiro Vieira,\\
@@ -395,7 +396,8 @@ to our next challenges as machine learners.
 \appendix
 \newpage
 \section{Appendix}
-\subsection{Appendix A: Confusion Matrix}
+
+\subsection{Confusion Matrix}
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\linewidth]{confusion}
@@ -403,8 +405,11 @@ to our next challenges as machine learners.
     \label{confusion}
 \end{figure}
 
-\subsection{Appendix B: XGBoost Test Results}
-\begin{table}[h!]
+\section{Detailled Grid Search results}
+\label{results_appendix}
+
+\subsection{XGBoost Grid Search Results}
+\begin{table}[H]
     \centering
     \begin{tabular}{ccc}
         parameters & RMSLE regression\\
@@ -451,12 +456,12 @@ to our next challenges as machine learners.
         l2-alpha = 1 & 0.3599 \\
         \hline
     \end{tabular}
-    \caption{XGBoost testing results}
-    \label{results}
+    \caption{XGBoost grid search results.}
+    \label{xgb_results}
 \end{table}
 
-\subsection{Appendix C: Random Forest Test Results}
-\begin{table}[h!]
+\subsection{Random Forest Grid Search Results}
+\begin{table}[H]
     \centering
     \begin{tabular}{ccc}
         parameters & RMSLE regression\\
@@ -472,26 +477,26 @@ to our next challenges as machine learners.
         17 out of 24 features & 0.3485 \\
         \hline
     \end{tabular}
-    \caption{Random forest testing results (without grid search)}
-    \label{results}
+    \caption{Random forest grid search results.}
+    \label{rf_results}
 \end{table}
 
-\subsection{Appendix D: Neural Networks Test Results}
-\begin{table}[h!]
+\subsection{Neural Networks Grid Search Results}
+\begin{table}[H]
     \centering
     \begin{tabular}{ccc}
-        parameters & RMSLE regression\\
+        Parameters & RMSLE regression\\
         \hline
         default (2 layers of 512 nodes) & 0.3691 \\
         3 layers of 512 nodes & 0.3614 \\
-        3 layers of 256 nodes & 0.3640 \
+        3 layers of 256 nodes & 0.3640 \\
         3 layers of 64 nodes & 0.3492 \\
         3 layers of 32 nodes & 0.3560 \\
         3 layers of 64, 32 and 16 nodes & 0.3562 \\
         3 layers of 64, 64 and 32 nodes & 0.3745 \\
         3 layers of 64, 128 and 64 nodes & 0.3509 \\
         3 layers of 64, 256 and 64 nodes & 0.3550 \\
-        the following entries are for 3 layers of 64 nodes \\
+        \emph{The following entries are for 3 layers of 64 nodes} \\
         relu as activation function & 0.3511 \\
         tanh as activation function & 0.3552 \\
         relu, alpha =1 & 0.3465 \\
@@ -506,11 +511,8 @@ to our next challenges as machine learners.
         batch size = 10000 & 0.3651 \\
         \hline
     \end{tabular}
-    \caption{Neural Networks testing results}
-    \label{results}
+    \caption{Neural Networks grid search results.}
+    \label{nnet_results}
 \end{table}
-
-\section{Detailled Grid Search results}
-\label{results_appendix}
 
 \end{document}
