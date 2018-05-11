@@ -394,13 +394,121 @@ to our next challenges as machine learners.
 
 \appendix
 \newpage
-\section{Additional Figures}
+\section{Appendix}
+\subsection{Appendix A: Confusion Matrix}
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\linewidth]{confusion}
     \caption{Confusion matrix of the extended dataset.}
     \label{confusion}
 \end{figure}
+
+\subsection{Appendix B: XGBoost Test Results}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        parameters & RMSLE regression\\
+        \hline
+        default & 0.3940 \\
+        num-boost-round = 100 & 0.3869 \\
+        early-stopping-round = 5 & 0.3878 \\
+        early-stopping-round = 10 & 0.3896 \\
+        early-stopping-round = 3 & 0.3877 \\
+        early-stopping-round = 1 & 0.3875 \\
+        model = gblinear & 0.4877 \\
+        model = dart & 0.3881 \\
+        depth = 3 & 0.4045 \\
+        depth = 6 & 0.3869 \\
+        depth = 10 & 0.3804 \\
+        depth = 20 & 0.4108 \\
+        depth = 15 & 0.3900 \\
+        depth = 9 & 0.3764 \\
+        depth = 8 & 0.3813 \\
+        eta = 0.3 & 0.3672 \\
+        eta = 0.4 & 0.3711 \\
+        eta = 0.2 & 0.3640 \\
+        eta = 0.1 & 0.3614 \\
+        eta = 0.05 & 0.3597 \\
+        eta = 0.001 & 0.5396 \\
+        eta = 0.01 & 0.3592 \\
+        alpha = 0.5 & 0.3701 \\
+        alpha = 1.5 & 0.3674 \\
+        alpha = 0.25 & 0.3667 \\
+        alpha = 1.1 & 0.3688 \\
+        alpha = 1.2 & 0.3662 \\
+        subsample = 0.7 & 0.3732 \\
+        subsample = 0.95 & 0.3680 \\
+        subsample = 0.85& 0.3692 \\
+        min-child-weight = 5 & 0.3637 \\
+        min-child-weight = 10 & 0.3603 \\
+        min-child-weight = 8 & 0.3599 \\
+        min-child-weight = 2 & 0.3627 \\
+        min-child-weight = 9 & 0.3588 \\
+        l1-gamma = 5 & 0.3588 \\
+        l1-gamma = 100 & 0.3588 \\
+        l2-alpha = 1 & 0.3607 \\
+        l2-alpha = 1 & 0.3600 \\
+        l2-alpha = 1 & 0.3599 \\
+        \hline
+    \end{tabular}
+    \caption{XGBoost testing results}
+    \label{results}
+\end{table}
+
+\subsection{Appendix C: Random Forest Test Results}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        parameters & RMSLE regression\\
+        \hline
+        default & 0.3676 \\
+        n-estimators = 100, max-depth = +inf & 0.358 \\
+        n-estimators = 125, max-depth = 10 & 0.362 \\
+        n-estimators = 130, max-depth = 20 & 0.361 \\
+        n-estimators = 125, max-depth = none & 0.350 \\
+        max-features = 10, min-samples-leaf/split = 3 & 0.3483 \\
+        20 out of 24 features & 0.3473 \\
+        15 out of 24 features & 0.3496 \\
+        17 out of 24 features & 0.3485 \\
+        \hline
+    \end{tabular}
+    \caption{Random forest testing results (without grid search)}
+    \label{results}
+\end{table}
+
+\subsection{Appendix D: Neural Networks Test Results}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        parameters & RMSLE regression\\
+        \hline
+        default (2 layers of 512 nodes) & 0.3691 \\
+        3 layers of 512 nodes & 0.3614 \\
+        3 layers of 256 nodes & 0.3640 \
+        3 layers of 64 nodes & 0.3492 \\
+        3 layers of 32 nodes & 0.3560 \\
+        3 layers of 64, 32 and 16 nodes & 0.3562 \\
+        3 layers of 64, 64 and 32 nodes & 0.3745 \\
+        3 layers of 64, 128 and 64 nodes & 0.3509 \\
+        3 layers of 64, 256 and 64 nodes & 0.3550 \\
+        the following entries are for 3 layers of 64 nodes \\
+        relu as activation function & 0.3511 \\
+        tanh as activation function & 0.3552 \\
+        relu, alpha =1 & 0.3465 \\
+        alpha = 10, 200 iterations & 0.3466 \\
+        alpha = 10, 300 iterations & 0.3505 \\
+        alpha = 100, no early stopping & 0.3486 \\
+        tol = 0.00001 & 0.3512 \\
+        batch size = 100 & 0.3486 \\
+        batch size = 200 & 0.3586 \\
+        batch size = 500 & 0.3538 \\
+        batch size = 1000 & 0.3644 \\
+        batch size = 10000 & 0.3651 \\
+        \hline
+    \end{tabular}
+    \caption{Neural Networks testing results}
+    \label{results}
+\end{table}
 
 \section{Detailled Grid Search results}
 \label{results_appendix}
